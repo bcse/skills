@@ -1,6 +1,6 @@
 # Natural-Language Prompt Patterns
 
-Use these structures as thinking scaffolds. Their code fences are documentation only; never reproduce a fence in the user-facing answer. Replace every bracketed field. For simple briefs, collapse the result into cohesive prose. For complex briefs and image reconstruction, keep the applicable labeled prose sections and preserve every distinct supported detail; remove only inapplicable placeholders and duplicated wording.
+Use the applicable patterns below to organize the resolved brief. Bracketed fields are placeholders and code fences mark examples in this reference. Apply the output contract in SKILL.md to the final answer.
 
 ## New image
 
@@ -12,7 +12,7 @@ Use one primary visual language and only a few supporting cues. Resolve incompat
 
 ## Standalone reconstruction from image evidence
 
-Use this when the source image is evidence for writing a prompt, but the downstream generator should not need that image. The final prompt is a complete description of the target and never mentions a supplied, provided, original, source, or reference image.
+For scene reconstruction, organize the evidence collected with image-analysis.md into these sections. For a comic, slide, diagram, or interface, organize the same evidence by panels or layout regions instead.
 
 ```text
 Create a [orientation and aspect ratio] [medium or deliverable] showing [one-sentence subject, action, setting, and style gist].
@@ -34,7 +34,7 @@ Mood and style: [Atmosphere, palette, medium, realism, texture, grading, contras
 Constraints: [Only evidence-based exclusions that prevent a known failure.]
 ```
 
-Use every applicable section. Lead with defining evidence, but retain unique supporting evidence instead of shortening the prompt. Do not add unsupported details.
+Use the applicable sections and adapt person-specific fields to the subject.
 
 ## Image edit
 
@@ -55,10 +55,10 @@ Assign each reference one clear role by default. If the user explicitly assigns 
 ## Exact text or localization
 
 ```text
-Create a [poster, package, sign, diagram, or interface] featuring the exact text “[TEXT]” with [typographic character, weight, case, color, and scale] at [precise placement]. Preserve the wording, spelling, punctuation, hierarchy, alignment, and spacing exactly, with no added copy. [For localization: Replace only “[SOURCE TEXT]” with “[TARGET TEXT]” while preserving every other visual element and the original layout.]
+Create a [poster, package, sign, diagram, or interface] featuring the exact text “[TEXT]” [occurrence count] with [typographic character, weight, case, color, and scale] at [precise placement]. Preserve the wording, spelling, punctuation, hierarchy, alignment, and spacing exactly, with no added copy. [For localization: Replace only “[SOURCE TEXT]” with “[TARGET TEXT]” while preserving every other visual element and the original layout.]
 ```
 
-For multiple strings, give each exact string and its placement in a separate prose sentence. Include only the applicable localization sentence. For dense or production-critical copy, keep text large and visually distinct enough to verify in the generated result.
+Specify the occurrence count for each required string. Use the requested or visibly supported count; otherwise use once for a standalone headline or tagline. For repeated labels or patterns, define the repetition by region or element. For multiple strings, give each string, count, and placement in a separate prose sentence. Include only the applicable localization sentence. For dense or production-critical copy, keep text large and visually distinct enough to verify in the generated result.
 
 ## Product or branded object
 
@@ -66,13 +66,13 @@ For multiple strings, give each exact string and its placement in a separate pro
 Create a [use-case] image of [product] shown [position and angle] on [surface or setting]. Preserve [shape, proportions, packaging geometry, label, and exact text]. Use [lighting setup] to reveal [materials, texture, transparency, reflections, and contact shadows], with [background and palette] and enough negative space for [intended layout need]. Add no unrequested branding or copy.
 ```
 
-## Diagram or infographic
+## Diagram, infographic, or educational visual
 
 ```text
 Create a [diagram or infographic] for [audience and purpose] on a [orientation] canvas. Organize it into [sections or regions] with [hierarchy, flow, axes, arrows, or legends]. Use the exact labels and data “[CONTENT]”, readable typography, consistent spacing, clear alignment, and [visual system]. Depict only the supplied facts and keep relationships unambiguous.
 ```
 
-Supply exact facts, labels, and numbers in the prompt rather than asking an image generator to retrieve them.
+Include the lesson objective, required components, and factual relationships. For educational visuals, favor consistent icons, clear arrows, readable labels, and enough white space to scan the concept. Put the resolved facts, labels, and numbers directly in the prompt. Resolve missing factual inputs through step 2 of SKILL.md.
 
 ## Interface mockup
 
@@ -87,3 +87,55 @@ Use the supplied character as the visual anchor, preserving [face and body propo
 ```
 
 Describe visible identity traits without trying to identify an unknown real person.
+
+## Reusable logo
+
+Describe the brand, audience, and defining shapes. Specify a strong silhouette, balanced negative space, and legibility at small and large sizes. Prefer simple shapes and minimal strokes when the brief calls for a reusable mark. Define placement and padding. For a transparent logo, request a fully transparent background with clean edges and no solid backdrop or drawn checkerboard. Apply the exact-text pattern to a wordmark. Describe vector-like appearance when appropriate without promising a vector file.
+
+## Historical scene
+
+Use the supplied place and date as context, with period-appropriate clothing, staging, and surroundings. Distinguish user-supplied context from visual evidence; image reconstruction alone does not establish an event or location. Resolve essential factual uncertainties through step 2 of SKILL.md.
+
+## Comic or storyboard
+
+Specify the panel count, arrangement, and reading order. Give each numbered panel one concrete visual beat with its action, framing, setting, and any exact dialogue. State recurring character traits once for the whole strip, then describe each panel's changes. Preserve the supplied narrative sequence.
+
+## Slide or chart
+
+Name the deliverable and define its canvas, layout regions, hierarchy, and visual system. Place the resolved title, labels, numbers, units, and supplied source notes directly in their regions. For charts, specify chart type, axes, series, and value-to-label mapping. For slides, specify orientation and reading order. Require readable type and spacing appropriate to the intended display size. Resolve missing factual inputs through step 2 of SKILL.md.
+
+## Worked examples
+
+### Merge revisions into final attributes
+
+Input: "A red mug on a wood table, morning window light. Update the mug to blue and use a square crop. Return the prompt."
+
+Output:
+
+Create a square photograph of a blue mug on a wooden table, lit by morning light from a window.
+
+### Request essential data
+
+Input: "Write an image prompt for a chart of our quarterly revenue this year." No revenue data is available in the context.
+
+Output:
+
+What revenue figures, currency, and year should the chart show for each quarter?
+
+### Organize a comic by panels
+
+Input: "Write a prompt for a vertical three-panel comic. A child plants a seed, waters it, then sees a sprout. Red overalls throughout. No dialogue."
+
+Output:
+
+Create a vertical three-panel comic read from top to bottom. Show the same child wearing red overalls in every panel, with no dialogue or captions.
+
+Panel 1: The child places a seed into a small hole in the soil of a flowerpot.
+
+Panel 2: The child gently waters the soil in the same flowerpot.
+
+Panel 3: The child looks at a small green sprout emerging from the soil in the flowerpot.
+
+## Generation guidance source
+
+The generation patterns draw on the [Generate images section of OpenAI's image prompting guide](https://developers.openai.com/api/docs/guides/image-prompting#generate-images). API settings and output inspection belong to the downstream generation workflow.

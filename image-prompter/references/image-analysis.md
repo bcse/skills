@@ -1,6 +1,6 @@
 # Detailed Image Analysis for Prompt Synthesis
 
-Load this reference whenever one or more images supply visual evidence. Analyze the image internally and transfer the evidence directly into the final optimized prompt; never expose a separate caption, inventory, confidence report, comparison, or rationale.
+Collect visual evidence internally for the resolved operation from SKILL.md. This reference defines fidelity and inspection coverage; SKILL.md defines conflict resolution, input questions, and final output.
 
 ## Fidelity before brevity
 
@@ -12,7 +12,7 @@ For a complex image, expect a detailed prompt with multiple labeled prose sectio
 
 - Verify that the actual image is viewable. A filename, inaccessible link, alt text, placeholder, or mention of an image is not visual access.
 - Inspect the rendered image at the highest useful detail. Zoom into faces, hands, clothing construction, accessories, text, products, interfaces, and small background elements.
-- If the required image is unavailable, ask for it rather than inventing a subject.
+- If the required image is unavailable, follow the missing-input rule in SKILL.md.
 - If blur, crop, or resolution hides a detail, use the broadest supported description or omit that single uncertain attribute. Do not let one unclear detail reduce coverage elsewhere.
 - Record the visible orientation and aspect ratio accurately. State pixel dimensions only when known from the file.
 
@@ -67,16 +67,12 @@ Transcribe clearly legible text exactly, including spelling, case, punctuation, 
 
 Do not identify an unknown real person. Do not infer a franchise, named location, occupation, character role, story context, or specific kind of place from recognition alone. Describe only visible evidence needed for the target image; when context is uncertain, prefer neutral wording such as “weathered timber structure” over an unsupported label such as “ship.”
 
-## Merge image evidence with user intent
+## Apply the resolved operation
 
-- Treat the user's requested result, changes, and exclusions as authoritative.
-- Use image evidence for everything the user leaves unspecified.
-- Build explicit `change` and `preserve` sets for edits. Carry preserved identity, geometry, pose, layout, viewpoint, lighting, palette, text, and environment into the prompt at their original level of detail.
-- With multiple images, assign each one role by default—base composition, subject, pose, object, material, palette, or visual treatment. Honor multiple roles when the user assigns them explicitly, and inherit only evidence relevant to those roles.
-- Ask one concise question only when the required image is unavailable or materially different multiple-image role assignments remain possible. Otherwise use supported evidence and conservative resolution.
+Use image evidence for details the user leaves unspecified, within each image's assigned role. For edits, build explicit change and preserve sets. Carry preserved identity, geometry, pose, layout, viewpoint, lighting, palette, text, and environment into the prompt at their original level of detail.
 
 ## Fidelity transfer check
 
 Before writing the answer, make a private coverage pass across all applicable categories. Every unique high-confidence observation must be carried into the prompt, deliberately merged with an equivalent phrase, or omitted for a specific reason such as irrelevance to the requested change. Never drop a detail solely because the prompt is already long.
 
-Then order the evidence for generation: opening target instruction, subject, wardrobe or physical construction, pose and action, environment, composition and camera, lighting, mood and style, and constraints. Keep the final content self-contained and reveal none of this inspection process.
+Finish when every applicable category is accounted for. Organize the checked evidence using the output structure selected in SKILL.md.
