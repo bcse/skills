@@ -25,7 +25,7 @@ Create one focused commit, or draft/update a commit message.
 
 - Never include unrelated changes, generated noise, secrets, credentials, or local-only files.
 - Avoid `git add .` unless the user explicitly asks to commit everything.
-- Ask before staging when scope is mixed or unclear.
+- When other changes are present, stage only authorized changes that can be clearly identified. Ask only when the intended commit scope cannot be safely separated.
 - If hooks fail, report the output and fix only intended-scope issues.
 
 ## Examples

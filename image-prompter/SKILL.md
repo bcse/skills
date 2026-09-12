@@ -21,7 +21,7 @@ If the deliverable is an image itself, use the image-generation workflow. Otherw
 
 Extract the intended deliverable and use, subject, action, wardrobe, setting, composition, visual treatment, lighting, palette, materials, required copy, data, and final attributes. Translate meaningful tags, weights, and flags into natural language.
 
-**Image evidence:** Whenever an image supplies visual information, read [image-analysis.md](references/image-analysis.md) completely before inspection. It defines the required coverage and fidelity check.
+**Image evidence:** For full reconstruction, read [image-analysis.md](references/image-analysis.md) completely and preserve its full fidelity coverage. For a local edit, composite input, or style reference, read only the sections relevant to that image's assigned role and the invariants the request needs. Do not inventory unrelated details.
 
 Resolve conflicts in this order: explicit requirements over inferred details, later refinements over earlier wording, functional constraints over decoration. For remaining ties, choose the least expansive interpretation that preserves the subject and intended use.
 
@@ -31,7 +31,7 @@ Finish this step with resolved requirements and the essential inputs available, 
 
 ## 3. Compose the prompt
 
-**Prompt patterns:** For reconstruction, reference-guided edits, composites, character consistency, exact text, products, logos, comics, historical scenes, diagrams, educational visuals, slides, charts, interfaces, or complex new-image briefs, read [prompt-patterns.md](references/prompt-patterns.md). Use the applicable sections and replace all placeholders. The reference also contains worked examples for prompt merging, missing data, and panel structure.
+**Prompt patterns:** For reconstruction, reference-guided edits, composites, character consistency, exact text, products, logos, comics, historical scenes, diagrams, educational visuals, slides, charts, interfaces, or complex new-image briefs, read the applicable sections of [prompt-patterns.md](references/prompt-patterns.md) and replace all placeholders. The reference also contains worked examples for prompt merging, missing data, and panel structure.
 
 Lead with the operation and defining subject or deliverable. Begin standalone prompts with Create, Render, or Photograph. Make placement, scale, and spatial relationships concrete. Describe the desired appearance positively; use brief exclusions where they prevent a materially incorrect result. Add specificity supported by the brief or needed to express the requested result.
 

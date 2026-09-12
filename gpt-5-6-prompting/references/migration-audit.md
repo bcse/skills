@@ -1,6 +1,6 @@
 # Auditing and migrating prompts to GPT-5.6
 
-Use this when the user already has a prompt — from GPT-5.4/5.5, from another model family, or one that simply grew over time.
+Use the relevant sections when auditing or migrating an existing prompt to GPT-5.6. For a text-only revision, perform the audit and return the requested text. Run empirical evaluation only when requested, with available and authorized tools, data, and budget.
 
 Contents:
 1. The audit pass
@@ -33,13 +33,13 @@ Flag two things specifically, because they're the most common 5.5 holdovers that
 
 ## 2. The removal loop
 
-This is the procedure OpenAI recommends, and it's what makes trimming safe rather than reckless:
+For requested empirical optimization, use a fixed set of representative evaluations and the agreed scope or budget:
 
 1. Start from a prompt and tool set that already works. Never rewrite from scratch and hope.
 2. Remove **one group** of instructions, examples, or tools.
 3. Rerun the **same** evals.
 4. Keep the removal if scores hold; restore the group if they drop.
-5. Repeat.
+5. Repeat only within the agreed scope or budget. Stop when the requested quality criteria hold or the budget is reached, and report any remaining uncertainty.
 
 One group at a time is the whole point — batch removals tell you the prompt got worse but not which cut did it.
 
@@ -54,7 +54,7 @@ Order of operations:
 1. **Choose the tier.** `sol` for frontier capability, `terra` for balanced cost, `luna` for high volume. Don't assume the top tier.
 2. **Baseline the reasoning effort** at your current setting, then test one level lower. GPT-5.6 often matches or beats the old quality with fewer tokens.
 3. **Check whether `max` helps** if you're on `xhigh`.
-4. **Run the audit pass** above, then the removal loop.
+4. **Run the audit pass** above. Use the removal loop only for requested empirical optimization.
 5. **Re-examine brevity instructions** — the single highest-yield check on this migration.
 6. **Confirm persisted reasoning.** The default flipped to `all_turns`. If your app manually manages history, make sure you're resending every response output item, and replaying encrypted reasoning items under ZDR or `store: false`.
 7. **Review caching economics.** Writes now cost 1.25× uncached input. Track `cached_tokens` and `cache_write_tokens`; switch to explicit breakpoints if you're writing prefixes you rarely reuse. Replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
@@ -82,7 +82,7 @@ Common cross-family habits that misfire on GPT-5.6:
 
 ## 5. What to measure
 
-Run representative tasks from the actual application, not synthetic ones. Capture:
+When running requested evaluations, use representative tasks from the actual application. Capture:
 
 - Task success rate
 - Answer completeness, and whether required evidence or citations survived
@@ -99,7 +99,7 @@ For PTC specifically, test the `program_output` item and the final assistant mes
 
 ## 6. Reporting the result
 
-Give the user:
+Follow the requested output format. Return only the prompt when that is the requested deliverable. For an audit, include relevant items below; parameters apply only to API usage, and empirical results require actual evaluation:
 
 1. **The revised prompt**, in one copy-pasteable block.
 2. **A removal table** — what was cut, which group it belonged to, and why. Grouping matters: it lets them restore a specific group if their evals disagree with the audit.

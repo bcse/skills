@@ -1,6 +1,6 @@
 ---
 name: gpt-5-6-prompting
-description: Write, audit, or migrate prompts for OpenAI's GPT-5.6 family (gpt-5.6-sol / terra / luna) following OpenAI's official prompting best practices. Use this whenever the user is working on a prompt aimed at GPT-5.6, GPT-5.x, or "the latest OpenAI model" — writing a new system/developer prompt, trimming a bloated one, porting a prompt from GPT-5.4/5.5/Claude/Gemini, choosing reasoning.effort or text.verbosity, defining agent autonomy and approval rules, or routing tool calls with Programmatic Tool Calling. Trigger it even for a casual "write me a prompt for GPT-5.6," and whenever a user pastes an existing OpenAI prompt and asks to improve it, shorten it, or make it work better.
+description: Write, audit, or migrate prompts explicitly targeting GPT-5.6 Sol, Terra, or Luna. Do not route unspecified latest-model or other model-family requests here.
 ---
 
 # Writing prompts for GPT-5.6
@@ -86,7 +86,8 @@ For requests to change, build, or fix, make the requested in-scope local changes
 and run relevant non-destructive validation without asking first.
 
 Require confirmation for external writes, destructive actions, purchases, or a
-material expansion of scope.
+material expansion of scope only when that action is not already authorized.
+Existing authorization remains valid within its scope; respect tool permissions.
 ```
 
 Name the safe local actions explicitly — reading files, inspecting logs, editing in-scope code, running tests. Keep the whole policy in one place. Sprinkling "ask first" or "wait for approval" across sections is the main cause of nuisance approval requests.
@@ -147,13 +148,11 @@ If the model can't know a tool's return shape before writing the program, route 
 
 ## Deliverable format
 
-Always hand back three things:
+Return the requested deliverable. If the user asks only for a paste-ready prompt, return only the prompt in their requested format.
 
-1. **The prompt**, in one copy-pasteable fenced block — no commentary interleaved.
-2. **Recommended parameters**, as a short block or table, with a one-line rationale each.
-3. **What to validate** — two to four lines on representative tasks to run and what to measure. Every recommendation here is directional; the doc's own framing is that results vary by workload. Fewer tokens or calls counts as an improvement only when the answer still clears the quality bar.
-
-When trimming an existing prompt, also show **what you removed and why**, grouped so the user can put back any group that turns out to matter. Remove one group at a time and rerun the same evals — that's the removal loop, detailed in `references/migration-audit.md`.
+- Include recommended parameters only for API usage, with a brief rationale when useful.
+- Include change explanations or a validation plan when requested or useful to an audit, rather than appending them to every prompt.
+- Run the removal/evaluation loop in `references/migration-audit.md` only when empirical optimization is requested and the required data, tools, and budget are available and authorized. A text-only revision ends with the revised prompt; do not imply measured improvement without evidence.
 
 ## References
 

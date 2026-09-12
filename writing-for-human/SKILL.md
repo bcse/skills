@@ -11,7 +11,7 @@ Judge it by four outcomes: the reader gets what they need, finds it, understands
 
 ## Start with evidence
 
-Name the primary reader and their first useful result. Then inspect the repository for:
+For a new README or substantial rewrite, name the primary reader and their first useful result, then inspect the repository for the facts below. For a local edit, verify only affected claims and directly related context; do not inventory the whole project:
 
 - Installation commands, supported versions, and package names
 - Working examples, options, defaults, ports, paths, and environment variables
@@ -68,7 +68,7 @@ flowchart LR
 
 ## Finish with a human check
 
-Read as a first-time user and confirm:
+For a local edit, check the changed passage and affected claims. For a new README or substantial rewrite, read as a first-time user and confirm:
 
 - The first screen explains the project and gives a next step.
 - The quick start is complete, ordered, copyable, and supported by evidence.

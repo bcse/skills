@@ -1,9 +1,9 @@
 ---
 name: automation-review
-description: Use when the user asks agent to review recent work, monthly work, recurring manual workflows, or opportunities to create skills, subagents, automations, or reusable process assets.
+description: Identify repeated workflows worth automating or packaging when the user asks for automation opportunities. Use work-summary for ordinary activity summaries.
 ---
 
-Look back over my recent work from the last 30 days, or all available history if shorter, and identify repeated manual workflows worth packaging.
+Inspect work within the requested scope and period to identify repeated manual workflows worth packaging. If no period is specified, use the last 30 days or all available history if shorter.
 
 Use available evidence in this order:
 - Recent Codex sessions and task summaries.
@@ -32,9 +32,9 @@ First produce a compact shortlist with:
 - recommended form: skill, subagent, automation, extend existing, or skip
 - why it is or is not worth creating
 
-Then create only the high-confidence missing items. Keep them narrow, practical, source-aware, and easy to validate. Do not create speculative, overlapping, or overly broad assets.
+If the request includes creating or implementing these assets, create only the high-confidence missing items within that authorization. Otherwise, the shortlist is the completed deliverable. Keep created assets narrow, practical, source-aware, and easy to validate; do not create speculative or overlapping assets.
 
 Finish with:
-- what you created or extended
+- recommendations, or what you created or extended when implementation was requested
 - what you deliberately skipped
 - what needs more evidence before packaging

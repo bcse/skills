@@ -1,21 +1,15 @@
 ---
 name: create-draft-pr
-description: End-to-end pull request routine — open a draft PR, then iterate with GitHub Copilot's automated review until it stops finding things. Use when creating a PR, when asked to "run the PR routine" or "take this through review", or when driving an existing PR through automated review rounds to a clean state.
+description: Create a draft PR. Run bounded automated review rounds only when the user explicitly requests the PR review routine or asks to take a PR through automated review.
 ---
 
 # PR Routine
 
-Open a draft PR, then loop with Copilot's automated review until a round produces nothing new.
+For a request to create a PR, complete section 1 and return its URL. Do not wait for reviews unless the user explicitly requests the review routine.
 
-```
-1. $write-pr       -> create draft PR
-2. wait            -> Copilot posts its review (~5 min, sometimes longer)
-3. read            -> collect root-level inline findings; ignore suppressed ones
-4. validate        -> $receiving-code-review; verify each claim yourself
-5. fix             -> cohesive commits, one per finding or coherent group
-6. push + reply    -> reply in-thread, name the SHA
-7. goto 2          -> until a round adds no new findings; stays in draft
-```
+For an explicitly requested routine, inspect the current PR or create a draft if needed, wait for the designated reviewer's completed review of the current head, validate its findings, and fix authorized in-scope defects. Push fixes and reply to review threads only within the user's authorization. Continue until a completed review has no new findings or the agreed limit is reached.
+
+Unless the user supplies other limits, allow at most 3 completed review rounds and 30 minutes of total review waiting across the routine. State these defaults when starting; do not pause to ask about optional overrides. Stop starting new rounds at the limit, finish any in-progress local correction safely, and report unreviewed changes or unresolved findings without calling the loop clean.
 
 Steps 3 and 6 are where this goes wrong in practice — the comments are not where they look like they should be, and replies land in the wrong place. Those sections are the reason this skill exists.
 
@@ -37,26 +31,22 @@ gh pr create --draft --base master --head "$(git branch --show-current)" \
   --title "fix(scope): Imperative summary" --body-file pr-body.md
 ```
 
-Draft on purpose: Copilot reviews drafts, so the automated rounds finish before a human is invited in. It stays a draft when the loop ends, too — see step 7.
+Return the draft PR URL once created. Continue below only for an explicitly requested automated review routine; first verify that the designated reviewer is available and review has been requested or configured for this PR.
 
 ## 2. Wait for the review
 
-Never foreground-sleep. Poll in the background and get one notification when something new lands:
+Use the environment's supported asynchronous wait or background execution tools, with short bounded polls when needed. Do not assume a particular `run_in_background` parameter exists. Count all waiting against the routine's remaining time budget.
+
+Resolve `REPO`, `PR`, the current `HEAD_SHA`, and `REVIEWER` from the target PR and the designated reviewer. Inspect submitted reviews, not just new inline comments:
 
 ```bash
-REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
-PR=645
-SEEN=.git/pr-$PR-seen.txt; touch "$SEEN"     # ids already handled
-
-for _ in $(seq 40); do                        # ~20 min ceiling
-  gh api "repos/$REPO/pulls/$PR/comments" --paginate \
-      --jq '.[] | select(.in_reply_to_id == null) | .id' \
-    | grep -vxFf "$SEEN" | grep -q . && break
-  sleep 30
-done
+gh api "repos/$REPO/pulls/$PR/reviews" --paginate \
+  --jq '.[] | {id, reviewer: .user.login, commit_id, state, submitted_at}'
 ```
 
-Run it with `run_in_background: true`. If the first 5 minutes are quiet, give it another 5 — the first review on a large diff is routinely slower than on later rounds.
+A completed round requires a previously unprocessed, submitted review by `REVIEWER` whose `commit_id` equals the current head SHA and whose state is `COMMENTED`, `APPROVED`, or `CHANGES_REQUESTED`. Zero inline comments can still be a completed review. Record processed review and comment IDs in the task state.
+
+Re-read the PR head before accepting completion; a review for an older head does not establish coverage of the new one. After a push, verify that a new review is actually scheduled or request one if authorized. If the reviewer is unavailable, no review is scheduled, the API fails persistently, or the time budget expires, report the pending state and end this invocation. Do not treat missing comments or an API error as a clean review, and do not create a monitor unless requested.
 
 ## 3. Read the findings
 
@@ -72,13 +62,13 @@ gh pr view "$PR" --json reviews \
 
 # The actual findings
 gh api "repos/$REPO/pulls/$PR/comments" --paginate \
-  --jq '.[] | {id, user: .user.login, path, line, in_reply_to_id, body}'
+  --jq '.[] | {id, pull_request_review_id, user: .user.login, path, line, in_reply_to_id, body}'
 ```
 
-- Root findings have `in_reply_to_id: null`. Your own replies come back in the same list — filter them out or you will re-answer yourself.
+- Select comments belonging to the completed review via `pull_request_review_id` and the designated reviewer. Root findings have `in_reply_to_id: null`; filter out replies and already handled comment IDs.
 - **Do not truncate this output.** No `| head`, and skip any wrapper that caps stdout: comment bodies get cut mid-sentence and you act on half a finding. Pull one body in full with
   `gh api "repos/$REPO/pulls/comments/$ID" --jq '.body'`.
-- Record handled ids into `$SEEN` as you go, so step 2 only wakes you for genuinely new ones.
+- Record handled comment IDs alongside processed review IDs in the task state; new comment arrival alone does not establish that a review is complete.
 
 **Ignore suppressed comments.** Copilot's review body often ends with a collapsed `<details><summary>Suppressed comments (N)</summary>` block, typically labelled "Previously missed — in code that hasn't changed since the last review". Those are not input to this loop. Copilot withheld them itself, they carry no comment id and so have no thread to answer in, and they target code the round did not touch — so working them turns a converging loop into an open-ended audit of the entire diff, growing the change set every round and delaying the human review the routine exists to reach. Do not fix them, do not reply to them, do not count them as findings.
 
@@ -106,25 +96,17 @@ Copilot is right often enough to take seriously and wrong often enough that you 
 
 Three lessons in that table:
 
-- **The worst finding can arrive late.** Do not stop after round 1 because round 1 looked minor.
+- **Findings can arrive in later rounds.** After pushing a fix, seek review of the new head within the remaining round and waiting budgets.
 - **A wrong reason can still point at a bad line.** When you refute the stated cause, read the line anyway before moving on.
 - **Claims about reachability deserve a probe, not reasoning.** Trace the path and run something.
 
-When you refute, say so in-thread with the evidence, and fix the nearby real defect if there is one. Do not implement a change whose justification you know to be wrong.
+When authorized to reply, explain refuted claims in-thread with evidence. Fix defects covered by the finding or necessary to complete the request; report unrelated nearby defects separately. Do not implement a change whose justification you know to be wrong.
 
 ## 5. Fix in cohesive commits
 
 One commit per finding or per coherent group — never one squashed catch-all. The reviewer needs to see which change answers which comment, and a bad call has to be revertible on its own.
 
-Prove each fix rather than asserting it:
-
-```bash
-# 1. write the test, confirm it fails against the current code
-# 2. apply the fix, confirm it passes
-# 3. revert the fix, confirm the test fails again, restore
-```
-
-That third step is what separates a test that pins the regression from one that merely passes. Run the project's full baseline suite before pushing, and put the numbers in the commit body.
+Run checks that demonstrate the fix and the project's required checks. Add regression coverage when it meaningfully distinguishes the defect from corrected behavior. Revert and reapply a fix to test the test only when its ability to detect the defect remains uncertain. Run the full suite when required by the project or justified by the change's risk; otherwise use affected tests. Report the checks actually performed and their results.
 
 ## 6. Push and reply
 
@@ -146,18 +128,15 @@ gh pr edit "$PR" --body-file pr-body.md
 
 ## 7. Loop
 
-Copilot re-reviews on every push and surfaces different things each round, so returning to step 2 is the point of the routine, not a formality.
+After a fix is pushed, return to section 2 only within the remaining budget and when another review is scheduled or can be requested within authorization.
 
-Terminate when a round adds no new root-level inline comments. A review whose only content is a suppressed-comments block is a clean round — end the loop. Distinguish a clean round from "it has not reviewed yet" — compare the newest review against the current head:
+End cleanly only after reading a completed review of the current head with no new root-level inline findings and no unresolved requested changes from the routine. A completed review containing only suppressed comments may end the loop if there are no unresolved requested changes; never classify a `CHANGES_REQUESTED` review as clean solely because it has no inline comments. If all findings were refuted with evidence and no code changed, report that disposition and stop without manufacturing a push or another round.
 
-```bash
-gh pr view "$PR" --json headRefOid,reviews \
-  --jq '{head: .headRefOid, last_review: (.reviews | last | .submittedAt)}'
-```
+At the round or waiting limit, return the current PR URL, reviewed and current SHAs, remaining findings, and whether the latest changes still await review. Do not extend the budget automatically or label that state clean.
 
 When the loop is done, report: rounds run, findings per round, which you accepted and which you refuted and why, the verification evidence, and whether CI ran tests.
 
-**Leave the PR in draft.** Do not run `gh pr ready`. Inviting human reviewers is the author's call — they may want another look at the diff, a live test run, or a decision on something you escalated before anyone is notified. Say the loop is clean and that the PR is ready to un-draft whenever they choose.
+**Leave the PR in draft.** Do not run `gh pr ready`. Inviting human reviewers is the author's call — they may want another look at the diff, a live test run, or a decision on something you escalated before anyone is notified. Report the actual outcome: clean, findings refuted, pending review, or budget reached. Only a clean outcome supports saying the review loop is complete.
 
 ## Guardrails
 

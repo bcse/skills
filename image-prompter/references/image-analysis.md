@@ -1,6 +1,6 @@
 # Detailed Image Analysis for Prompt Synthesis
 
-Collect visual evidence internally for the resolved operation from SKILL.md. This reference defines fidelity and inspection coverage; SKILL.md defines conflict resolution, input questions, and final output.
+Collect visual evidence internally for the resolved operation from SKILL.md. Full reconstruction uses all applicable categories below. For a local edit, composite input, or style reference, inspect only evidence relevant to the assigned image role and required invariants; completeness and fidelity checks below apply within that scope. SKILL.md defines conflict resolution, input questions, and final output.
 
 ## Fidelity before brevity
 

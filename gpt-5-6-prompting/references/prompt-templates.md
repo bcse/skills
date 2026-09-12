@@ -77,8 +77,9 @@ and run relevant non-destructive validation without asking first. Safe unattende
 actions: reading files, searching the repo, inspecting logs, editing in-scope
 source and tests, running `pnpm test` and `pnpm lint`.
 
-Require confirmation before: installing packages, running migrations, any network
-write, deleting files, or expanding scope beyond the request.
+Require confirmation for external writes, destructive actions, purchases, or a
+material expansion of scope only when that action is not already authorized.
+Existing authorization remains valid within its scope; respect tool permissions.
 
 # Output
 Lead with what changed. Then the diff summary by file, then anything you could
@@ -213,7 +214,8 @@ For requests to change, build, or fix, make the requested in-scope local changes
 and run relevant non-destructive validation without asking first.
 
 Require confirmation for external writes, destructive actions, purchases, or a
-material expansion of scope.
+material expansion of scope only when that action is not already authorized.
+Existing authorization remains valid within its scope; respect tool permissions.
 ```
 
 **Brevity with a priority order** (use instead of "be concise"):

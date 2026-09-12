@@ -1,6 +1,6 @@
 ---
 name: skill-usage-report
-description: Use when a user asks for Codex skill usage statistics, a skill usage report, local session-log analysis, or a report covering the last six months or another date range.
+description: Generate Codex skill-usage statistics and reports from local session logs for a requested period. Excludes general activity reports and unrelated session-log analysis.
 ---
 
 # Skill usage report

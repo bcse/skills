@@ -23,7 +23,7 @@ This skill judges and shapes; it does not replace medium expertise.
 
 ## Workflow when creating something visual
 
-Work in this order. Each step constrains the next, and that chain of constraints is what makes the result cohesive rather than assembled.
+Use this workflow for a new artifact or broad redesign. For a local styling change, inherit the existing direction and tokens, then change and inspect only the affected area.
 
 **1. Direction — before any pixels or code.**
 Name the direction in 2–3 adjectives ("warm, editorial, unhurried" / "dense, technical, precise") plus one reference world the subject actually lives in (lab notebooks, transit signage, vinyl sleeves, terminal UIs). If you cannot state the direction in one sentence, you do not have one yet — and no amount of styling will hide that. Derive it from the subject and audience, not from what is easy to render.
@@ -34,8 +34,8 @@ Commit to: 1–2 typefaces with a type scale ratio, a palette of neutrals + one 
 **3. Execute.**
 Build with the system. When a value is not on the scale, that is a bug, not an adjustment. For detailed decisions (pairing type, tuning shadows, chart styling, per-medium rules for slides vs posters vs documents), read `references/fundamentals.md`.
 
-**4. Self-critique — before delivering, every time this skill is active.**
-Run the four checks below. If any fail, fix and re-check. This pass is cheap and it is where most of the perceived quality comes from.
+**4. Check the requested result.**
+For a local change, inspect the affected area and relevant requirements. For a new artifact or broad redesign, use the four checks below. Fix and re-check only unresolved requirements or defects that affect the requested outcome; do not restart a full critique for each small adjustment.
 
 A condensed end-to-end pass of this workflow — and of the critique protocol — is in `references/worked-examples.md`.
 
