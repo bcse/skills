@@ -1,0 +1,4 @@
+interface:
+  display_name: "GPT-6 Prompting"
+  short_description: "Write and audit prompts for the GPT-6 family"
+  default_prompt: "Use $gpt-6-0-prompting to improve this prompt for my chosen GPT-6 model."
