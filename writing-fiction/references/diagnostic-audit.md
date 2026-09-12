@@ -1,6 +1,6 @@
 # Fiction Diagnostic Audit
 
-Load this reference for revision, critique, “sounds generic” requests, and final draft checks. Audit structure before prose. Apply only the gates that fit the work's scale and genre.
+Use the relevant sections for revision, critique, “sounds generic” requests, and final draft checks. Apply only checks that fit the requested outcome, scale, and genre. For wording, voice, or local edits, inspect the affected passage and relevant continuity constraints; audit structure only when a structural defect affects the requested outcome.
 
 ## Structural gates
 
@@ -62,7 +62,7 @@ A cadence match does not excuse a canon or genre violation.
 
 ## Prose pass
 
-Run only after structural revision.
+Run after any needed structural revision; skip structural revision when the request and evidence do not require it.
 
 Quote and assess:
 
@@ -96,5 +96,5 @@ Rank structural and continuity findings before prose findings. Do not infer or s
 
 - If a gate conflicts with a genre promise, keep the promise.
 - If a pattern is clearly deliberate and earned, note it and leave it.
-- If fixing a line exposes a missing scene function, re-derive the scene rather than filling the gap with new explanation.
+- If fixing a line exposes a missing scene function that affects the requested outcome, re-derive the scene rather than filling the gap with new explanation.
 - If the user asked for findings only, do not rewrite.

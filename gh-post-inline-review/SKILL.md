@@ -107,7 +107,7 @@ after the fixes in `eae67b92`/`bac8a00f`/`2d26170a`     <- dead text
    ```
 
 6. Inspect the payload to confirm the finding count, order, text, paths, lines, sides, and commit SHA match the supplied input.
-7. Re-read the PR head SHA immediately before posting. If it changed, stop and request updated anchors for the new diff.
+7. Re-read the PR head SHA immediately before posting. If it changed, verify that each supplied anchor still refers to the same unchanged code in the new diff, without re-evaluating or changing the finding. If that is established, update `commit_id` in `review.json`, regenerate the payload for the new head SHA, and repeat step 6. Request updated anchors only when it cannot be established.
 8. Post only when the user has explicitly asked to publish, submit, or leave the findings:
 
    ```bash

@@ -29,6 +29,8 @@ For local use, the companion starts automatically. For remote devices, start the
 
 ## Core Commands
 
+Before log streaming or video recording, choose a maximum capture duration and, when relevant, an earlier stop event. Run the process in a controllable session and stop it at the event or deadline; do not leave a foreground stream blocking task completion.
+
 ### Device/Simulator Management
 
 ```bash

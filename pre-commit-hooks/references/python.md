@@ -12,7 +12,7 @@ Use this reference when a repo has `pyproject.toml`, `uv.lock`, `requirements.tx
 | Tests with uv | `uv run pytest` | `uv run python -m pytest` |
 | Tests without uv | `pytest` | `python -m pytest` |
 
-Use exactly one type checker unless the repo already runs more than one. Do not add a new checker casually; first make the repo clean.
+Use exactly one type checker unless the repo already runs more than one. Prefer the existing checker. For a new strict gate, fix only setup-related or otherwise in-scope issues; report unrelated existing failures and defer the new gate without disabling or weakening existing gates.
 
 ## Detection
 

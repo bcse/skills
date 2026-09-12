@@ -94,7 +94,7 @@ Three strengths of rule live in this skill, and confusing them is itself a taste
 
 ## When critiquing someone else's design
 
-Do not free-associate observations. Read `references/critique.md` and follow its protocol: context first, first-impression capture, the four checks, then leverage-ordered passes, then at most three prioritized fixes phrased as observation → effect → cause → concrete change. Feedback that cannot be acted on without a follow-up question is not finished.
+Do not free-associate observations. For a broad critique, read `references/critique.md` and follow its protocol: context first, first-impression capture, the four checks, then leverage-ordered passes, then at most three prioritized fixes phrased as observation → effect → cause → concrete change. For a focused question, inspect only the affected area and relevant checks; stop when the question is answered with evidence. Feedback that cannot be acted on without a follow-up question is not finished.
 
 ## When something "looks AI-generated" or amateur
 
@@ -104,5 +104,5 @@ Read `references/anti-patterns.md`. It is a diagnostic table of the recognizable
 
 - `references/fundamentals.md` — the craft layer: hierarchy, typography, spacing, color, depth, motion, charts, and per-medium rules with concrete numbers. Read when making detailed styling decisions or when a check fails and you need the underlying rule.
 - `references/anti-patterns.md` — recognizable failure patterns and their fixes. Read when diagnosing work that feels generic, cluttered, or off.
-- `references/critique.md` — the review protocol, critique vocabulary, and how to phrase feedback. Read before giving design feedback on anything.
+- `references/critique.md` — the review protocol, critique vocabulary, and how to phrase feedback. Read for a broad critique, or consult relevant sections when needed for a focused design question.
 - `references/worked-examples.md` — one complete creation pass and one complete critique pass. Read to calibrate how the workflow, checks, and three-fix limit compose end to end.

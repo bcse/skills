@@ -7,13 +7,15 @@ description: Use this skill for requests related to LangChain/LangGraph in order
 
 ## Overview
 
-This skill explains how to access LangGraph Python documentation to help answer questions and guide implementation. It supports two documentation strategies: DeepWiki MCP (preferred when available) and direct web fetch (fallback).
+This skill explains how to access LangGraph Python documentation to help answer questions and guide implementation. It supports DeepWiki MCP for documentation discovery and direct web fetch for known pages or fallback.
 
 ## Instructions
 
+Start with a known relevant documentation page. Fetch an index only when the page is unknown, and read additional pages only to resolve missing or conflicting information. Stop when the available evidence answers the request.
+
 ### Strategy 1: DeepWiki MCP (Preferred)
 
-If the DeepWiki MCP server is available, use it as the primary documentation source. The relevant GitHub repositories are:
+When documentation discovery is needed and the DeepWiki MCP server is available, prefer it for discovery. The relevant GitHub repositories are:
 
 - `langchain-ai/langchain` — Core LangChain framework (chains, prompts, LLMs, retrievers, tools)
 - `langchain-ai/langgraph` — LangGraph (stateful agents, graphs, persistence, streaming)
@@ -28,11 +30,11 @@ Map the user's question to one or more of the repositories above. When in doubt:
 
 #### Step 2: Explore Documentation Structure
 
-Use `read_wiki_structure` to get the topic index for the relevant repository. This helps identify exactly which pages to read.
+If the relevant page is unknown, use `read_wiki_structure` to identify it from the repository topic index.
 
 #### Step 3: Read Relevant Documentation
 
-Use `read_wiki_contents` to fetch the specific documentation pages that match the user's question. Select 2-4 of the most relevant topics.
+Use `read_wiki_contents` to fetch relevant documentation only as needed to answer the user's question.
 
 #### Step 4: Ask Targeted Questions (Optional)
 
@@ -45,20 +47,20 @@ For complex or cross-cutting questions, use `ask_question` against the relevant 
 
 Synthesize the documentation into a clear, actionable response. Prefer code examples from the docs and cite the source repository when relevant.
 
-### Strategy 2: Web Fetch (Fallback)
+### Strategy 2: Web Fetch
 
-If DeepWiki MCP is not available, fall back to fetching documentation directly from the web.
+Fetch a known relevant documentation URL directly, or use web fetch when DeepWiki MCP is unavailable.
 
 #### Step 1: Fetch the Documentation Index
 
-Use the WebFetch tool to read the following URL:
+If the relevant page is unknown, use the WebFetch tool to read the following URL:
 https://docs.langchain.com/llms.txt
 
 This provides a structured list of all available documentation with descriptions.
 
 #### Step 2: Select Relevant Documentation
 
-Based on the question, identify 2-4 most relevant documentation URLs from the index. Prioritize:
+Identify documentation URLs from the index only for information still needed to answer the question. Prioritize:
 - Specific how-to guides for implementation questions
 - Core concept pages for understanding questions
 - Tutorials for end-to-end examples
@@ -74,6 +76,6 @@ After reading the documentation, complete the user's request.
 
 ## Notes
 
-- When both strategies are available, prefer DeepWiki MCP — it provides richer context and supports targeted Q&A.
-- For questions that touch multiple repositories (e.g., "how do I trace a LangGraph agent in LangSmith"), query each relevant repo.
+- When discovery is needed and both strategies are available, prefer DeepWiki MCP for its context and targeted Q&A.
+- For questions that touch multiple repositories (e.g., "how do I trace a LangGraph agent in LangSmith"), query additional repositories only to resolve missing or conflicting information.
 - Always ground answers in the fetched documentation rather than relying on training data, as LangChain/LangGraph APIs evolve rapidly.

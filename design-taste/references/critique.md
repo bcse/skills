@@ -4,7 +4,7 @@ How to review a design so the feedback is diagnostic and actionable rather than 
 
 ## Protocol
 
-Run the steps in order. The ordering matters because early steps capture what real viewers experience, and later steps explain it.
+For a broad critique, run the steps in order: early steps capture what real viewers experience, and later steps explain it. For a focused question, inspect only the affected area and relevant checks; stop when the question is answered with evidence.
 
 **0. Context first.** Ask or infer: purpose, audience, medium, constraints, and *stage* — concept, working draft, or final polish. Feedback must match the stage: do not kern a wireframe; do not propose restructuring a page that ships tomorrow. If the goal is unknown, say so and critique against a stated assumption.
 

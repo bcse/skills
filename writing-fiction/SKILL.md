@@ -13,7 +13,7 @@ Assume familiarity with ordinary story craft. Concentrate on the recurring failu
 
 - Treat the user's manuscript, canon, voice, viewpoint, genre, and requested outcome as authoritative.
 - Before novel, series, multi-chapter continuation, or roughly 10,000-plus-word work, read [references/continuity-ledger.md](references/continuity-ledger.md).
-- Before revision, critique, or a final draft check, read [references/diagnostic-audit.md](references/diagnostic-audit.md).
+- For revision, critique, or a final draft check, read the sections of [references/diagnostic-audit.md](references/diagnostic-audit.md) relevant to the requested outcome.
 
 ## Route by scale and task
 
@@ -97,7 +97,7 @@ When revising another writer, preserve idiosyncrasy, roughness, repetitions, and
 
 ## Revise by re-deriving
 
-Before rewriting a weak scene, state:
+Re-derive a scene only when a structural defect affects the requested outcome. For wording, voice, or local edits, revise the affected passage directly and check only relevant continuity constraints. Before a structural rewrite, state:
 
 ```text
 ENTRY STATE   What each relevant character wants, knows, and risks
@@ -106,9 +106,9 @@ EXIT STATE    What is now possible, impossible, or newly costly
 CARRY         The uncertainty passed to the next unit
 ```
 
-Draft the scene again from those functions. Do not edit line by line until the new structure exists. A revision whose change log is mostly substitutions is still anchored to the old scene.
+For a structural rewrite, draft the scene again from those functions before line editing; substitutions alone do not repair structural defects.
 
-Run structural gates before the prose pass. Count or quote findings; an unenumerated “looks fine” is not a check. Use [references/diagnostic-audit.md](references/diagnostic-audit.md).
+Apply only checks relevant to the requested change. Complete any needed structural revision before the prose pass. Count or quote findings; an unenumerated “looks fine” is not a check. Use the relevant sections of [references/diagnostic-audit.md](references/diagnostic-audit.md).
 
 ## Output contract
 

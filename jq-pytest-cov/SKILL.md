@@ -1,14 +1,6 @@
 ---
 name: jq-pytest-cov
-description: >
-  Use this skill whenever the user wants to query, analyze, filter, or summarize a pytest-cov JSON
-  coverage report (coverage.json) using jq. Triggers include: analyzing test coverage, finding
-  uncovered lines, listing low-coverage files or functions, comparing module coverage, extracting
-  coverage summaries, identifying dead code, or any task that involves reading or slicing data from
-  a coverage.json file. Also use when the user asks "what's my coverage for X", "which files have
-  low coverage", "show me missing lines in Y", or anything involving pytest coverage data and shell
-  tooling. Use this skill proactively whenever a coverage.json file is mentioned alongside any kind
-  of analysis, reporting, or filtering task.
+description: Query pytest-cov coverage.json reports with jq for coverage summaries, uncovered lines, and file or function statistics.
 ---
 
 # jq + pytest-cov JSON Coverage Reports

@@ -22,7 +22,7 @@ git rev-list --left-right --count @{u}...HEAD    # want "0  0"
 git log --oneline <base>..HEAD                   # every line must belong here
 ```
 
-An unrelated doc or config commit riding along costs a reviewer's attention and muddies the diff. Move it to its own branch before opening.
+If unrelated commits are present, report them. Move or rewrite commits only when changing the branch history is already authorized.
 
 Use `$write-pr` for the title and body, then:
 
@@ -143,5 +143,5 @@ When the loop is done, report: rounds run, findings per round, which you accepte
 - Every fix is scoped to the finding. A review comment is not license to refactor.
 - Only inline review comments are findings. Suppressed comments are out of scope for the loop.
 - Never widen a client-facing surface to satisfy an observability request — check where an error message or payload actually travels before enriching it.
-- Keep unrelated commits off the branch for the whole loop, not just at creation.
+- Do not add unrelated commits during the loop. Report any that appear; move or rewrite them only within existing authorization to change branch history.
 - Never report the loop as clean on a round you did not actually read.

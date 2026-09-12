@@ -51,7 +51,7 @@ Document the same setup commands in README/AGENTS so contributors can enable the
 
 - Use POSIX `sh`; avoid bashisms unless the repo already requires Bash.
 - If `core.hooksPath` is already set to another path, do not overwrite silently.
-- Keep only commands the repo can run today. Fix existing failures before adding strict gates.
+- Keep only commands the repo can run today. Fix only failures introduced by this setup or already within the requested scope. Report unrelated existing failures and defer any affected new strict gate; do not disable or weaken existing gates.
 - Do not auto-detect tools and silently skip missing ones. A hook should fail when a selected gate cannot run.
 - Prefer check-only formatters when available. If using mutating commands (`cargo fmt`, `npm run format`, `ruff format`), keep a before/after `git diff` guard and abort if files changed.
 - Do not run dependency-upgrade commands in a hook: no `npm audit fix`, `cargo update`, `uv lock --upgrade`, or similar. Put dependency updates in explicit commits/PRs.
