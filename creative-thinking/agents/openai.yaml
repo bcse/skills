@@ -1,0 +1,6 @@
+interface:
+  display_name: "Creative Thinking"
+  short_description: "Explore directions for open-ended creative work"
+
+policy:
+  allow_implicit_invocation: true
