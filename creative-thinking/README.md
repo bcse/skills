@@ -17,9 +17,8 @@ The skill is also configured for automatic selection when a design or creative t
 ## How it works
 
 1. A Python helper samples seven distinct words from a broad, cleaned vocabulary of noun, adjective, and adverb spellings. You can supply your own seed instead.
-2. The agent explores sounds, fragments, rhythms, contrasts, and relationships across the words. Unusual words can contribute through their form alone.
-3. It writes a brief describing the organizing principle, the choices that principle changes, and how those choices serve your purpose. The seed words and association notes stay outside this brief.
-4. It uses the brief to develop the concepts or finished work you requested.
+2. The agent treats the seed as a secret code to decrypt and draw inspiration from, looking beyond the surface for subpatterns.
+3. It develops the requested work from useful associations while preserving your purpose and constraints. Unusual words can contribute through their form alone.
 
 You receive the work itself. Ask the agent to explain the seed's influence if you want to inspect the connection.
 
@@ -29,10 +28,10 @@ The vocabulary removes capitalized-only names and acronyms, single letters, a sm
 
 The bundled scripts use Python 3.9 or later and the standard library. Word sampling runs locally and offline; the vocabulary is included with the skill. If the agent cannot execute the helper, it reports that limitation and continues from your brief.
 
-Random input can still produce similar or literal ideas. If revising the brief does not resolve literal references, the skill can use a fresh execution context containing only your task, constraints, and abstract brief. Judge the result by whether it helps your task.
+Results vary with the task, seed, and model. Judge the result by whether it helps your task.
 
 ## Sources and maintenance
 
-The method adapts [Anshu Chimala's article on AI-assisted design](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world). Seven-word sampling and the explicit abstraction step are adaptations developed for this skill.
+The method adapts [Anshu Chimala's article on AI-assisted design](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world). This skill uses seven randomly sampled words as its seed and combines the secret-code prompt with an invitation to explore subpatterns.
 
 See [sources and vocabulary documentation](references/wordlist.md) for dictionary provenance, licensing, and rebuilding instructions. The agent's operating instructions are in [SKILL.md](SKILL.md).

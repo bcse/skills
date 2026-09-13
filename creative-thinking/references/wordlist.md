@@ -2,7 +2,7 @@
 
 ## Creative method
 
-The method is inspired by [Anshu Chimala's design process](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world). Seven-word sampling and the explicit abstraction step are adaptations, not demonstrated improvements over the article's alphanumeric seed.
+The method is inspired by [Anshu Chimala's design process](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world). This skill uses seven randomly sampled words with a secret-code prompt and an invitation to explore subpatterns. This combination has not been shown to outperform the article's alphanumeric seed.
 
 ## Vocabulary
 
