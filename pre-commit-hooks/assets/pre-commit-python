@@ -30,8 +30,9 @@ git -C "$repo_root" diff --binary > "$before_diff"
 run_in "$python_dir" ruff check
 run_in "$python_dir" ruff format --check
 
-# Keep exactly one type checker, matching the repo.
-run_in "$python_dir" ty check
+# Keep the repo's existing type checker. Use Pyrefly only if none is configured.
+# Replace this command when the repo already uses another checker.
+run_in "$python_dir" pyrefly check
 # run_in "$python_dir" mypy .
 # run_in "$python_dir" pyright
 
