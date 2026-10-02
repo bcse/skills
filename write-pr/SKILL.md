@@ -1,13 +1,27 @@
 ---
 name: write-pr
-description: Write clear, well-structured pull request titles and descriptions. Use when creating a PR, drafting PR content, or when the user asks to write/improve a PR description.
+description: Write clear pull request titles and descriptions with visual explanations. Use when creating a PR, drafting PR content, or when the user asks to write/improve a PR description.
 ---
 
 # Writing Pull Requests
 
-Help reviewers understand the problem, the resulting behavior, and the evidence supporting the change. Describe the final patch for someone who has not seen the authoring conversation.
+Help reviewers understand the problem, the resulting behavior, and the evidence supporting the change. Describe the final patch for someone who has not seen the authoring conversation. Prefer diagrams or images when they explain the change more clearly than prose. Use short captions and keep text for facts the visual cannot show.
 
 Before drafting, inspect the current diff against the intended base, the repository's PR template, and available test results. Use supplied artifacts when repository access is unavailable, and state material evidence gaps. Reconcile the title and body with the final scope after revisions.
+
+## Reader and language
+
+Read and apply $writing-for-human before drafting. The reader is a reviewer who needs to understand the change and verify its evidence. Adapt its reader guidance to that task: problem, resulting behavior, key changes, and validation. Use the repository's PR template instead of its README route.
+
+Write the title, body, and visual labels in [ASD-STE100 Simplified Technical English, Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf). Apply its dictionary and writing rules in addition to the reader guidance:
+
+- Use approved words with their approved meanings, parts of speech, and forms. Verify uncertain words in the STE dictionary.
+- Use established software terms as technical nouns or technical verbs only when the standard permits them. Use one term for each concept.
+- Use a maximum of 25 words per descriptive sentence and 20 words per instruction. Give each instruction one action.
+- Prefer active voice and simple verb forms. Put conditions before instructions. Keep each paragraph about one topic.
+- Preserve facts, conditions, risks, and uncertainty when you simplify sentences.
+
+Keep code, commands, paths, identifiers, quoted output, and required template text exact. Use STE for the surrounding explanation. Do not claim verified STE compliance without a review against the standard and dictionary. If these sources are unavailable, state the verification limit outside the PR draft.
 
 ## PR Title
 
@@ -56,7 +70,7 @@ Use `!` before `:` to indicate breaking changes.
 
 ## PR Body Template
 
-Follow the repository's template when present. Otherwise, adapt this template to the change. A small fix may need only a summary and validation. Add review aids within Changes when they clarify behavior or help reviewers navigate the diff; omit unused sections and checklists.
+Follow the repository's template when present. Otherwise, adapt this template to the change. A small fix may need only a summary and validation. Use diagrams, images, or other review aids within Changes to explain behavior and help reviewers navigate the diff. Omit unused sections and checklists.
 
 ```markdown
 ## Summary
@@ -66,6 +80,8 @@ Follow the repository's template when present. Otherwise, adapt this template to
 Fixes #123
 
 ## Changes
+
+<A diagram, image, or diff sketch with a short caption, when useful>
 
 - <Specific change 1>
 - <Specific change 2>
@@ -95,7 +111,7 @@ Lead with the concrete problem and resulting behavior. Include a trigger and bef
 
 ### Changes Section
 
-Describe concrete behavior and design choices that help reviewers assess the patch. For a change spanning several files, name the entry point and key files or symbols in a useful reading order. Include technical details when they explain a tradeoff, dependency, or risk.
+Show concrete behavior and design choices that help reviewers assess the patch. Prefer a diagram or image to a long explanation of flows, relationships, states, or UI changes. For a change spanning several files, name the entry point and key files or symbols in a useful reading order. Include technical details when they explain a tradeoff, dependency, or risk.
 
 **Good:**
 - Add rate limiting to API endpoints
@@ -107,44 +123,9 @@ Describe concrete behavior and design choices that help reviewers assess the pat
 
 ### Review aids
 
-For AI-authored PRs, give reviewers a compact explanation they can check against the code. Choose the smallest useful view. A straightforward patch may need none; a complex patch may benefit from more than one when each answers a different question.
+Give reviewers a compact visual explanation they can check against the code when it makes the change easier to understand. Choose the smallest useful view. A straightforward patch may need only a sentence; a complex patch may benefit from several views when each answers a different question.
 
-Use `$show-me` when available to build a focused visual explanation. Read its guidance when choosing a view. If it is unavailable, use the inline forms below. Keep PR content readable on its own with fenced `diff`, `text`, or `mermaid` blocks. Link supplemental artifacts only when reviewers can access them; local file paths are not usable PR attachments.
-
-| Reviewer question | Useful view |
-|-------------------|-------------|
-| What changed in an existing flow or structure? | A small before/after `diff` sketch |
-| What decisions does the new logic make? | Pseudocode with inputs, branches, side effects, and outcomes |
-| How do components, data, or states interact? | A Mermaid sequence, flow, or state diagram |
-| Where should I start in a broad refactor? | A shallow file, component, or call tree with responsibilities |
-
-Place each view beside the explanation it supports. Use names from the patch and retain ordering, ownership, and error paths that matter to the change. Label simplified sketches as conceptual so reviewers do not mistake them for literal source diffs. Check every view against the final patch, and point to the relevant files or symbols for verification.
-
-For example, a conceptual pseudocode diff can explain a save-path change:
-
-```diff
- on save(content)
-+  if content equals stored content
-+    return existing result
-   persist content
-   return saved result
-```
-
-Use standalone pseudocode when most of the logic is new. Keep it at the decision level so it explains the behavior without duplicating the implementation.
-
-Use Mermaid when interactions or timing are the review question. For example, a completion event that must follow a successful save:
-
-```mermaid
-sequenceDiagram
-    participant Worker
-    participant Database
-    participant Events
-    Worker->>Database: Save row
-    Database-->>Worker: Save succeeds
-    Worker->>Events: Emit completion
-```
-
-Label this as the success path if failures also matter, and describe or diagram the relevant failure behavior. Avoid a diagram that merely repeats an adjacent sketch or a short sentence.
+Read [Review aids](references/review-aids.md) when selecting a visual or preparing an attachment. Use the diagram or image format that best explains the change; Mermaid is one option. GitHub also supports file attachments. Keep the explanation readable within the PR, and verify each view against the final patch.
 
 ### Testing Section
 
