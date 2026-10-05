@@ -13,6 +13,19 @@ Unless the user supplies other limits, allow at most 3 completed review rounds a
 
 Steps 3 and 6 are where this goes wrong in practice — the comments are not where they look like they should be, and replies land in the wrong place. Those sections are the reason this skill exists.
 
+## Helper script
+
+`scripts/pr_review.py` (a path relative to this skill's directory) runs the repeated calls of sections 2, 3, and 6. Run it from a clone of the PR's repository. The raw `gh` calls in those sections show what it does.
+
+| Section | Command | Result |
+|---|---|---|
+| 2 | `scripts/pr_review.py wait <PR>` | Blocks until the reviewer's completed review of the current head exists, then prints its ID. Exits 3 after 25 minutes (`--minutes N`). |
+| 3 | `scripts/pr_review.py read <PR>` | Prints that review as plain text, with every "Open", "Previously missed", and suppressed item, then its root inline comments. `--review-id` reads another review. |
+| 6 | `scripts/pr_review.py reply <PR> <COMMENT_ID> reply.txt` | Replies in the thread. `--dry-run` posts nothing. |
+| 6 | `scripts/pr_review.py verify <PR> --body-file pr-body.md` | After a body edit: the published body equals the file, no commit hash is in backticks, every commit of the PR appears, the closing issue links, the PR is a draft, the commit links render. Exits 1 on a problem. |
+
+The script selects reviews by reviewer login and commit. Your own thread replies appear in the reviews list as `COMMENTED` entries under your login, so selecting by commit alone finds the wrong review.
+
 ## 1. Open the draft PR
 
 Before creating, confirm the branch is pushed, in sync, and carries only commits that belong to this PR:
@@ -126,6 +139,8 @@ When authorized to edit the PR body, update it in the same pass when the change 
 ```bash
 gh pr edit "$PR" --body-file pr-body.md
 ```
+
+Then run `scripts/pr_review.py verify`. A new `Fixes #N` shows in `closingIssuesReferences` about ten seconds after the edit, so run `verify` again if the closing issue list is empty.
 
 ## 7. Loop
 

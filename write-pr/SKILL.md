@@ -228,6 +228,8 @@ sequenceDiagram
 
 If failure behavior affects the change, explain or diagram that path too. Do not add a diagram that repeats an adjacent sketch or a short sentence.
 
+Render every Mermaid block before you publish: `node scripts/render_mermaid.mjs <body.md> [out-dir]` (the script path is relative to this skill's directory), run from a repository that has `@playwright/test`. It names a block with a syntax error and exits 1. Then read each PNG: order, labels, and layout are visible only there (a reversed Before and After rendered without an error). Use `#35;` for a literal `#` in a label. GitHub pins its own Mermaid version, so a diagram that renders here can still differ on the PR.
+
 #### Show UI changes with images or recordings
 
 Use screenshots, annotated images, or before/after comparisons to show UI and layout changes. Use a short GIF or video for behavior that depends on motion or interaction. Show the relevant state and result, and keep the capture focused on the change.
