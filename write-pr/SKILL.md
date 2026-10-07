@@ -73,11 +73,16 @@ Use `!` before `:` to indicate breaking changes.
 Follow the repository's template when present. Otherwise, adapt this template to the change. A small fix may need only a summary and validation. Use diagrams, images, or other review aids within Changes to explain behavior and help reviewers navigate the diff. Omit unused sections and checklists.
 
 ```markdown
+| Item | Detail |
+| --- | --- |
+| Issue | Fixes #123 |
+| Size | 4 files, +40 −12 lines |
+| Status | Draft. Unit tests pass. No live run. |
+| Breaking | None |
+
 ## Summary
 
 <What this PR does and why. Link related issues.>
-
-Fixes #123
 
 ## Changes
 
@@ -100,6 +105,12 @@ Fixes #123
 ```
 
 ## Writing Guidelines
+
+### At-a-glance table
+
+Start the body with this table, before `## Summary`, so a reviewer gets the key facts in five seconds. Name both columns in the header row: GitHub shows an empty header as a blank bar. Write each Detail as one short sentence. Move longer facts into their sections. Use the rows Issue, Size, Status, and Breaking. Add a row only for a fact that changes how a reviewer reads the PR.
+
+Every other table in the body also starts with a header row that names each column.
 
 ### Summary Section
 
