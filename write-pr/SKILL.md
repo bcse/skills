@@ -1,305 +1,80 @@
 ---
 name: write-pr
-description: Write clear pull request titles and descriptions with visual explanations. Use when creating a PR, drafting PR content, or when the user asks to write/improve a PR description.
+description: Write or revise PR titles and descriptions. Use when creating a PR, updating its description after code changes, or improving its explanation and visuals.
 ---
 
-# Writing Pull Requests
+# Write a PR for reviewers
 
-Help reviewers understand the problem, the resulting behavior, and the evidence supporting the change. Describe the final patch for someone who has not seen the authoring conversation. Prefer diagrams or images when they explain the change more clearly than prose. Use short captions and keep text for facts the visual cannot show.
+Make the change easy to understand at a glance: the problem, the new behavior, the main tradeoff, and the evidence. Describe the final patch for someone who has not seen the conversation.
 
-Before drafting, inspect the current diff against the intended base, the repository's PR template, and available test results. Use supplied artifacts when repository access is unavailable, and state material evidence gaps. Reconcile the title and body with the final scope after revisions.
+## 1. Inspect the change and the existing explanation
 
-## Reader and language
+Read the diff against the intended base, the repository's PR template, and the available validation results. For an existing PR, read its current body before drafting.
 
-Read and apply $writing-for-human before drafting. The reader is a reviewer who needs to understand the change and verify its evidence. Adapt its reader guidance to that task: problem, resulting behavior, key changes, and validation. Use the repository's PR template instead of its README route.
+Apply `writing-for-human` for plain technical English. Its local guidance is sufficient for routine PR writing. Use familiar words, accurate software terms, and short labels; preserve code, commands, identifiers, and quoted output exactly. Formal ASD-STE100 certification or dictionary verification is outside this workflow unless the user requests it.
 
-Write the title, body, and visual labels in [ASD-STE100 Simplified Technical English, Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf). Apply its dictionary and writing rules in addition to the reader guidance:
+When updating a PR, carry forward each useful diagram, chart, table, image, and video. Update affected labels and values in place. Move supporting detail into an expandable section when it interrupts the main explanation. Replace an obsolete visual with one that answers the same reviewer question. Remove a visual only when it is incorrect, redundant, or the user requests removal; record the specific reason. Reduce repeated prose before removing useful visual information.
 
-- Use approved words with their approved meanings, parts of speech, and forms. Verify uncertain words in the STE dictionary.
-- Use established software terms as technical nouns or technical verbs only when the standard permits them. Use one term for each concept.
-- Use a maximum of 25 words per descriptive sentence and 20 words per instruction. Give each instruction one action.
-- Prefer active voice and simple verb forms. Put conditions before instructions. Keep each paragraph about one topic.
-- Preserve facts, conditions, risks, and uncertainty when you simplify sentences.
+**Done when:** the final scope and evidence limits are known, and every existing visual has a disposition: keep, update, move, replace, or remove with a reason. A request to add results should preserve unaffected explanation and layout.
 
-Keep code, commands, paths, identifiers, quoted output, and required template text exact. Use STE for the surrounding explanation. Do not claim verified STE compliance without a review against the standard and dictionary. If these sources are unavailable, state the verification limit outside the PR draft.
+## 2. Choose what the reviewer should see
 
-## PR Title
+Choose the view before writing the long explanation. Images and videos are available for any PR, including backend, infrastructure, data, and tooling changes. Images need not be screenshots: draw a diagram, chart, or annotated trace as an image when precise layout matters more than inline editability. Choose the medium for what it explains, rather than the type of code changed. Follow explicit requests for visuals.
 
-Use Conventional Commits format:
-
-```
-<type>(<scope>): <description>
-```
-
-### Types
-
-| Type       | Use for                                    |
-|------------|--------------------------------------------|
-| `feat`     | New feature                                |
-| `fix`      | Bug fix                                    |
-| `docs`     | Documentation only                         |
-| `refactor` | Code restructure (no behavior change)      |
-| `perf`     | Performance improvement                    |
-| `test`     | Adding or fixing tests                     |
-| `chore`    | Maintenance, dependencies, configs         |
-| `build`    | Build system changes                       |
-| `ci`       | CI/CD configuration                        |
-
-### Scope
-
-Optional noun in parentheses describing the affected area: `fix(auth):`, `feat(api):`, `docs(readme):`
-
-### Description Rules
-
-- Use imperative mood: "Add" not "Added" or "Adds"
-- Start with capital letter
-- No period at end
-- Keep under 50 characters when possible
-
-### Examples
-
-```
-feat(auth): Add OAuth2 login support
-fix(api): Handle null response in user endpoint
-docs: Update installation instructions
-refactor(db): Simplify query builder logic
-feat!: Remove deprecated v1 API endpoints
-```
-
-Use `!` before `:` to indicate breaking changes.
-
-## PR Body Template
-
-Follow the repository's template when present. Otherwise, adapt this template to the change. A small fix may need only a summary and validation. Use diagrams, images, or other review aids within Changes to explain behavior and help reviewers navigate the diff. Omit unused sections and checklists.
-
-```markdown
-## Summary
-
-<What this PR does and why. Link related issues, for example `Fixes #123`.>
-
-## Changes
-
-<A diagram, image, or diff sketch with a short caption, when useful>
-
-- <Specific change 1>
-- <Specific change 2>
-
-## Testing
-
-<Commands actually run, observed results, and relevant limits>
-
-<Separate any suggested manual verification from completed checks>
-
-## Checklist
-
-- [ ] Tests added/updated
-- [ ] Documentation updated (if needed)
-- [ ] Breaking changes noted (if any)
-```
-
-## Writing Guidelines
-
-### Tables
-
-Start the body with `## Summary`. Do not put a summary table of issue, size, status, and breaking change before it: the PR page already shows the title (`!` marks a breaking change), the draft state, and the size, and Summary, Testing, and Breaking Changes carry the rest.
-
-Every table in the body starts with a header row that names each column. GitHub shows an empty header as a blank bar.
-
-### Summary Section
-
-Lead with the concrete problem and resulting behavior. Include a trigger and before/after example when that makes the change easier to assess.
-
-- Be specific—avoid vague phrases like "improve performance" or "enhance UX"
-- Link related issues using keywords: `Fixes #123`, `Closes #456`, `Related to #789`
-- Don't assume readers will read linked issues—include essential context
-
-### Changes Section
-
-Show concrete behavior and design choices that help reviewers assess the patch. Prefer a diagram or image to a long explanation of flows, relationships, states, or UI changes. For a change spanning several files, name the entry point and key files or symbols in a useful reading order. Include technical details when they explain a tradeoff, dependency, or risk.
-
-**Good:**
-- Add rate limiting to API endpoints
-- Update error messages to include request ID
-
-**Avoid:**
-- Changed line 42 in auth.js
-- Refactored some code
-
-### Review aids
-
-Prefer diagrams or images to long prose when they make the change easier to understand. Select the view by the reviewer's question, not by the rendering tool. Use the smallest useful view and a short caption. A simple change can need only a sentence. Use several views only when each explains a different part of the change.
-
-| Reviewer question | View |
+| What the change needs to explain | View to include |
 | --- | --- |
-| What changed in an existing flow or structure? | A small `diff` sketch |
-| What decisions does the new logic make? | Pseudocode |
-| Which functions run, and in what order? | A call tree |
-| Which UI components own state or cross module boundaries? | A component tree |
-| Which files have new responsibilities? | A shallow file tree |
-| How do components, data, or states interact? | A sequence, flow, or state diagram, inline or as an attached image |
-| What changed in a UI or layout? | Annotated screenshots or a before/after image |
-| How does a visible behavior change over time? | A short GIF or video |
-| What needs a larger view or an editable source? | A PDF, diagram source, or HTML attachment with an inline preview |
+| A lifecycle, ownership boundary, interaction, or data flow | Before/after diagram, sequence diagram, or flow sketch; draw it as a custom image (Graphviz, SVG, or HTML export) when layout matters |
+| Measured benefits and costs | Before/after table with units, workload, and limits; add a generated chart image when the pattern matters |
+| Branches, decisions, or a small code transformation | Pseudocode or a conceptual diff |
+| Behavior over time, such as memory release, retries, a migration, or a CLI workflow | Short video, GIF, or annotated sequence of frames |
+| UI appearance or interaction | Screenshot comparison or a short recording |
+| One simple behavior that a sentence fully explains | A short sentence; add a visual only if it adds information |
 
-Put each view beside the explanation it supports. Keep only the calls, files, properties, states, and boundaries needed for that explanation. Use names from the patch. Preserve the order of operations, ownership, side effects, and error paths that affect behavior. Write explanations and labels in STE; preserve code names.
+Use the smallest view that answers the question. Different views should explain different things. For example, a process diagram explains memory ownership; a measurement table shows memory and latency.
 
-Let the visual carry the explanation. Use prose for the problem, captions, decisions, risks, and validation that the visual cannot show. Do not repeat the full visual in a paragraph. Add useful alt text to images. Keep labels readable at the size shown in the PR.
+For tree examples, custom diagram images, videos, screenshots, or attachment handling, read [Visual reference](references/visuals.md) when using that format.
 
-Label simplified views as conceptual. Point to the files or symbols that reviewers can use to verify them. Do not present a conceptual sketch as a literal source diff. Verify all views against the final patch before you finish the PR draft.
+**Done when:** each main behavior change has a clear explanation format, and measured benefits appear beside their costs and uncertainty.
 
-#### Show decisions with pseudocode
+## 3. Draft the visible explanation first
 
-Show inputs, branches, side effects, and results. Use a `diff` sketch when the surrounding logic already exists:
+Follow the repository's template. Otherwise use this reading order:
 
-```diff
- on save(content)
--  persist content
-+  if content equals stored content
-+    return existing result
-+  persist content
-+  clear cached content
-   return saved result
+1. **Summary:** one short paragraph stating the concrete problem and resulting behavior. Start the body here; the PR page already shows the title, draft state, and size, so do not put a summary table before it. Link related issues with closing keywords such as `Fixes #123`, and include the context a reader needs without opening them.
+2. **What changes:** the main visual with a short caption. Let it carry the flow or structure; use prose for decisions and facts it cannot show.
+3. **Results and tradeoffs:** a compact comparison when measurements exist. Keep operational changes, breaking changes, and material limits visible.
+4. **Validation:** commands actually run, observed results, and relevant environment or revision. Distinguish completed checks from proposed work.
+
+Omit sections that add nothing: a small fix may need only Summary and Validation. Keep the core diagram, when the change needs one, and the key results visible. Put long reviewer guides, secondary diagrams, raw measurements, and extended rationale in `<details>` sections or linked references. Use named table headers and short cells. Use prose for reasoning rather than putting paragraphs into table cells.
+
+Use a Conventional Commit title: `type(scope): Imperative description`, as in the `conventional-commits` skill. Scope is optional; mark breaking changes with `!`. Match the final scope, keep it near 50 characters, start the description with a capital letter, and omit the final period.
+
+Keep validation claims tied to evidence. Mock tests, live tests, and production observations are distinct. Mark checklist items complete only after the work is complete; omit empty boilerplate.
+
+Claim TDD only when execution records establish the sequence. Report the test and command run before the implementation with the failure that shows the missing behavior (an unrelated setup failure does not count), then the same test passing afterward, then any refactor with the checks that passed after it. Describe tests added after the implementation as regression coverage. If the sequence is unknown, say it is unverified. Do not invent earlier failures, logs, or test counts.
+
+**Done when:** the summary, the main visual (if the change needs one), and the key results explain the change without opening supplementary sections or reading the authoring conversation.
+
+## 4. Render and inspect
+
+Check every visual against the final diff: before/after labels, arrows, order, ownership, values, units, and failure paths. Label simplified views as conceptual.
+
+Choose a renderer that preserves readability. Mermaid suits simple flows and stays editable in the PR. When the layout is dense or the explanation needs charts or precise grouping, draw a custom image instead.
+
+When using Mermaid, render every block with the skill's `scripts/render_mermaid.mjs`, from a repository with `@playwright/test`:
+
+```sh
+node <write-pr-skill-directory>/scripts/render_mermaid.mjs <body.md> [output-directory]
 ```
 
-Show the complete block when most of the logic is new or when omitted context would hide ownership or order:
+Open every rendered PNG. Inspect it at the width it will occupy in the PR. Fix tiny text, overly wide flows, clipped labels, and unclear grouping, then render and inspect again. Use compact before/after columns or separate views when a long row becomes unreadable. Syntax success alone does not complete this step. For other formats, inspect the actual image, recording, or rendered preview.
 
-```text
-on save(content)
-  if content equals stored content
-    return existing result
-  persist content
-  clear cached content
-  return saved result
-```
+Run a glance check on the body: from the headings, visible visuals, and short captions, can a reviewer identify what changed, why it matters, its main cost, and what was tested? Put missing answers in the visible explanation and remove repeated prose.
 
-Keep pseudocode at the decision level. Include exact source only when reviewers need the implementation details to assess the change.
+**Done when:** every visual is both accurate and readable, and the glance check passes. If rendering is unavailable, preserve the visual source and state that visual verification is incomplete; resolve the rendering blocker before presenting it as verified.
 
-#### Show calls, components, or files with trees
+## 5. Deliver or publish the requested update
 
-Use a call tree for a simple sequence of function calls:
+For a draft-only request, return the draft and local artifacts. For an authorized PR update, publish the revised title and body, then read them back to confirm the visuals, tables, results, and limitations survived the update.
 
-```text
-submitForm
-  createSession
-    persistPrompt
-    launchAgent
-  navigateToSession
-```
-
-A tree cannot show every branch or asynchronous interaction. State relevant conditions, or use a sequence diagram when timing matters.
-
-Use a component tree to show UI structure and relevant state ownership:
-
-```text
-SessionPage (src/routes/session.tsx; owns session state)
-  useSessionEvents()
-  SessionToolbar
-    RunSkillButton (packages/ui)
-  SessionTimeline
-```
-
-Use a shallow file tree to show responsibilities in a broad change. Use `diff` when an existing structure changes:
-
-```diff
- src/
- ├── commands/       # parses user actions
- ├── sessions/       # owns session state
--└── transport.ts    # sends requests and receives events
-+└── transport/
-+    ├── client.ts   # sends requests
-+    └── stream.ts   # receives events
-```
-
-You can also use `diff` for a component tree or call tree. Include enough context to show where new parts belong.
-
-#### Show interactions with diagrams
-
-Use a sequence diagram for interactions over time, a flow diagram for decisions or data flow, and a state diagram for state changes. Use Mermaid, Graphviz, a diagram editor, or another suitable tool. Render the result as an image when that gives reviewers a clearer view.
-
-For Mermaid, use `sequenceDiagram`, `flowchart`, or `stateDiagram-v2` for these respective views:
-
-For example, this conceptual success path sends a completion event only after the save succeeds:
-
-```mermaid
-sequenceDiagram
-    participant Worker
-    participant Database
-    participant Events
-    Worker->>Database: Save row
-    Database-->>Worker: Save succeeds
-    Worker->>Events: Send completion event
-```
-
-If failure behavior affects the change, explain or diagram that path too. Do not add a diagram that repeats an adjacent sketch or a short sentence.
-
-Render every Mermaid block before you publish: `node scripts/render_mermaid.mjs <body.md> [out-dir]` (the script path is relative to this skill's directory), run from a repository that has `@playwright/test`. It names a block with a syntax error and exits 1. Then read each PNG: order, labels, and layout are visible only there (a reversed Before and After rendered without an error). Use `#35;` for a literal `#` in a label. GitHub pins its own Mermaid version, so a diagram that renders here can still differ on the PR.
-
-#### Show UI changes with images or recordings
-
-Use screenshots, annotated images, or before/after comparisons to show UI and layout changes. Use a short GIF or video for behavior that depends on motion or interaction. Show the relevant state and result, and keep the capture focused on the change.
-
-For a designed illustration or HTML preview, use the product's colors, type, spacing, components, labels, and data. Make an HTML preview readable on desktop and mobile. Open a local preview for the author when useful. State what an illustration represents; do not present it as a captured product result.
-
-#### Attach files on GitHub
-
-Use [GitHub's attachment documentation](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/attaching-files) to verify supported types, size limits, and upload contexts. Select a format that reviewers can view easily:
-
-| Purpose | Supported formats | Upload context |
-| --- | --- | --- |
-| Diagrams and screenshots | `.png`, `.jpg`, `.jpeg`, `.svg` | All contexts |
-| Motion or interaction | `.gif`, `.mp4`, `.mov`, `.webm` | All contexts |
-| Larger documents or editable diagrams | `.pdf`, `.drawio` | PR comments |
-| Downloadable previews or supporting files | `.html`, `.htm`, `.txt`, `.md`, `.patch`, `.zip` | PR comments |
-
-The documentation lists other supported formats. Support for an attachment does not mean that GitHub renders it inline. For downloadable sources or HTML, include an image preview of the key point in the PR body.
-
-Images and GIFs have a 10 MB limit. Videos have a 10 MB limit on free plans and a 100 MB limit on paid plans, subject to GitHub's upload conditions. Other files have a 25 MB limit. Prefer H.264 for video compatibility.
-
-Upload through GitHub's attachment control, or use GitHub CLI for supported local images and videos. Use the returned attachment URL in the PR. Files uploaded to public repositories are accessible without authentication; private and internal repository attachments require repository access.
-
-If the task is to draft content only, provide the local files and mark their intended positions in the draft. Do not invent uploaded URLs. A local path is not an attachment. Keep the core explanation visible in the PR body; use attachments for larger views, recordings, or editable sources.
-
-### Testing Section
-
-Report validation that actually happened. Name the command, tested behavior, and observed result; include the revision or environment when it affects reproducibility. Link relevant test cases, CI runs, or captured output when available. Keep excerpts short and preserve the assertion or failure reason that matters.
-
-Separate completed checks from suggested verification. State relevant checks not run and material limits, such as mocked dependencies or untested concurrency. If no results are available, say so instead of turning proposed commands into passing evidence.
-
-#### TDD evidence
-
-When test-driven development was used and its sequence is supported by execution records, include a compact account in Testing:
-
-| Stage | Evidence to include |
-|-------|---------------------|
-| Red | The test and command run before implementation, plus the observed failure showing the missing behavior. An unrelated setup failure does not establish this. |
-| Green | The same test passing after the implementation, with the command and observed result. |
-| Refactor, if performed | What was simplified and which checks passed afterward. |
-
-Include broader regression checks separately, with their actual scope and results. Passing tests alone do not establish TDD. If tests were added after implementation, describe them as regression coverage. Replaying a test against the old code afterward can demonstrate the regression, but does not prove the test was written first. If a TDD claim is requested but the sequence is unknown, state that it is unverified and report the evidence available. Do not invent earlier failures, refactoring steps, logs, or test counts.
-
-### Breaking Changes
-
-If the PR introduces breaking changes, add a section:
-
-```markdown
-## Breaking Changes
-
-- `oldMethod()` removed—use `newMethod()` instead
-- Config option `foo` renamed to `bar`
-```
-
-## Checklist Usage
-
-- Mark items with `[x]` only when actually completed
-- Remove items that don't apply, or mark as N/A
-- Common items: tests, docs, migrations, changelog
-
-## Quick Reference
-
-| Do | Don't |
-|----|-------|
-| Use imperative mood | Use past tense |
-| Link issues explicitly | Assume context |
-| List specific changes | Be vague |
-| Provide test steps | Say "tested locally" |
-| Note breaking changes | Hide API changes |
+**Done when:** the delivered draft or saved PR matches the inspected version. Report the link and any material verification gap briefly.
