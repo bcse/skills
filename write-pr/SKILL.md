@@ -23,7 +23,7 @@ Choose the view before writing the long explanation. Images and videos are avail
 
 | What the change needs to explain | View to include |
 | --- | --- |
-| A lifecycle, ownership boundary, interaction, or data flow | Before/after diagram, sequence diagram, or flow sketch; draw it as a custom image (Graphviz, SVG, or HTML export) when layout matters |
+| A lifecycle, ownership boundary, interaction, or data flow | Before/after diagram, sequence diagram, or flow sketch: Mermaid for a short chain, a fixed SVG for stages, groups, or a look that holds in every theme |
 | Measured benefits and costs | Before/after table with units, workload, and limits; add a generated chart image when the pattern matters |
 | Branches, decisions, or a small code transformation | Pseudocode or a conceptual diff |
 | Behavior over time, such as memory release, retries, a migration, or a CLI workflow | Short video, GIF, or annotated sequence of frames |
@@ -32,7 +32,7 @@ Choose the view before writing the long explanation. Images and videos are avail
 
 Use the smallest view that answers the question. Different views should explain different things. For example, a process diagram explains memory ownership; a measurement table shows memory and latency.
 
-For tree examples, custom diagram images, videos, screenshots, or attachment handling, read [Visual reference](references/visuals.md) when using that format.
+For tree examples, fixed SVG diagrams and other custom images, videos, screenshots, or attachment handling, read [Visual reference](references/visuals.md) when using that format.
 
 **Done when:** each main behavior change has a clear explanation format, and measured benefits appear beside their costs and uncertainty.
 
@@ -59,12 +59,18 @@ Claim TDD only when execution records establish the sequence. Report the test an
 
 Check every visual against the final diff: before/after labels, arrows, order, ownership, values, units, and failure paths. Label simplified views as conceptual.
 
-Choose a renderer that preserves readability. Mermaid suits simple flows and stays editable in the PR. When the layout is dense or the explanation needs charts or precise grouping, draw a custom image instead.
+Choose a renderer that preserves readability. Mermaid suits a short chain of about six nodes and stays editable in the PR. Draw a fixed SVG for a flow with stages, groups, or branches, for a before/after pair, for charts, or for a diagram that must look the same in light and dark themes. Mermaid stacks a long chain into one tall column and GitHub restyles it per theme; an SVG fixes the layout, so stages sit side by side. Switch from Mermaid to SVG as soon as its render comes out tall, cramped, or ambiguous.
 
 When using Mermaid, render every block with the skill's `scripts/render_mermaid.mjs`, from a repository with `@playwright/test`:
 
 ```sh
 node <write-pr-skill-directory>/scripts/render_mermaid.mjs <body.md> [output-directory]
+```
+
+When using an SVG, show it on a light page and a dark page with `scripts/rasterize_svg.mjs`, from the same kind of repository. SVG conventions and attaching the file are in the Visual reference.
+
+```sh
+node <write-pr-skill-directory>/scripts/rasterize_svg.mjs <diagram.svg> [output-directory]
 ```
 
 Open every rendered PNG. Inspect it at the width it will occupy in the PR. Fix tiny text, overly wide flows, clipped labels, and unclear grouping, then render and inspect again. Use compact before/after columns or separate views when a long row becomes unreadable. Syntax success alone does not complete this step. For other formats, inspect the actual image, recording, or rendered preview.
