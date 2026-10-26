@@ -26,13 +26,13 @@ Choose the view before writing the long explanation. Images and videos are avail
 | A lifecycle, ownership boundary, interaction, or data flow | Before/after diagram, sequence diagram, or flow sketch: Mermaid for a short chain, a fixed SVG for stages, groups, or a look that holds in every theme |
 | Measured benefits and costs | Before/after table with units, workload, and limits; add a generated chart image when the pattern matters |
 | Branches, decisions, or a small code transformation | Pseudocode or a conceptual diff |
-| Behavior over time, such as memory release, retries, a migration, or a CLI workflow | Short video, GIF, or annotated sequence of frames |
+| Behavior over time, such as memory release, retries, a migration, or a CLI workflow | Looping animated SVG for an explanatory illustration; short video, GIF, or annotated sequence of frames for captured behavior |
 | UI appearance or interaction | Screenshot comparison or a short recording |
 | One simple behavior that a sentence fully explains | A short sentence; add a visual only if it adds information |
 
 Use the smallest view that answers the question. Different views should explain different things. For example, a process diagram explains memory ownership; a measurement table shows memory and latency.
 
-For tree examples, fixed SVG diagrams and other custom images, videos, screenshots, or attachment handling, read [Visual reference](references/visuals.md) when using that format.
+For tree examples, fixed or animated SVG diagrams and other custom images, videos, screenshots, or attachment handling, read [Visual reference](references/visuals.md) when using that format.
 
 **Done when:** each main behavior change has a clear explanation format, and measured benefits appear beside their costs and uncertainty.
 

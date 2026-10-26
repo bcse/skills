@@ -90,6 +90,8 @@ Show it with `scripts/rasterize_svg.mjs` and open the light and the dark PNG. Ch
 
 ## Videos and animated sequences
 
+For explanatory motion, use a looping animated SVG. Draw with `currentColor` and opacity so it works in light and dark themes. Make the unanimated state a clear, useful still: it is shown under reduced motion. Animate with CSS or SMIL only, and honor `prefers-reduced-motion` by showing that still. Inspect the full loop and the reduced-motion state in both themes.
+
 Use a short video or GIF when timing or change over time carries the explanation: a worker starts and exits, memory falls, retries recover, a migration progresses, or a CLI workflow completes. An annotated sequence of still frames is useful when the reader needs to compare stages.
 
 Show one scenario, trim waiting time, label important events, and make the explanation understandable without sound. Give the clip a short caption with the outcome so the PR remains useful at a glance. Watch the full exported clip to check timing, labels, and the final state.
