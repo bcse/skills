@@ -7,9 +7,11 @@ description: Create a draft PR. Run bounded automated review rounds only when th
 
 For a request to create a PR, complete section 1 and return its URL. Do not wait for reviews unless the user explicitly requests the review routine.
 
-For an explicitly requested routine, inspect the current PR or create a draft if needed, wait for the designated reviewer's completed review of the current head, validate its findings, and fix authorized in-scope defects. Push fixes and reply to review threads only within the user's authorization. Continue until a completed review has no new findings or the agreed limit is reached.
+For an explicitly requested routine, inspect the current PR or create a draft if needed, wait until every check on the current head completes, read the new comments, validate their findings, and fix authorized in-scope defects. Push fixes and reply to review threads only within the user's authorization. Continue until a round brings no new findings or the agreed limit is reached.
 
-Unless the user supplies other limits, allow at most 3 completed review rounds and 30 minutes of total review waiting across the routine. State these defaults when starting; do not pause to ask about optional overrides. Stop starting new rounds at the limit, finish any in-progress local correction safely, and report unreviewed changes or unresolved findings without calling the loop clean.
+The review is triggered automatically: a GitHub hook runs the AI review on every pushed head. Never request a review.
+
+Unless the user supplies other limits, allow at most 3 review rounds and 60 minutes of waiting per round. State these defaults when starting; do not pause to ask about optional overrides. Stop starting new rounds at the limit, finish any in-progress local correction safely, and report unreviewed changes or unresolved findings without calling the loop clean.
 
 Steps 3 and 6 are where this goes wrong in practice — the comments are not where they look like they should be, and replies land in the wrong place. Those sections are the reason this skill exists.
 
@@ -19,12 +21,12 @@ Steps 3 and 6 are where this goes wrong in practice — the comments are not whe
 
 | Section | Command | Result |
 |---|---|---|
-| 2 | `scripts/pr_review.py wait <PR>` | Blocks until the reviewer's completed review of the current head exists, then prints its ID. Exits 3 after 25 minutes (`--minutes N`). |
-| 3 | `scripts/pr_review.py read <PR>` | Prints that review as plain text, with every "Open", "Previously missed", and suppressed item, then its root inline comments. `--review-id` reads another review. |
+| 2 | `scripts/pr_review.py wait <PR>` | Polls every minute. Prints each new comment as it appears and one status line per poll, until every check run on the head is complete on two consecutive polls. Exits 0 with each check's conclusion and the count of new comments and reviews; 3 after 60 minutes (`--minutes N`). |
+| 3 | `scripts/pr_review.py read <PR>` | Prints every new comment in full, oldest first: review bodies as plain text, inline comments with file and line, and PR timeline comments. Exits 3 when there are none. `--review-id` prints one review with its root inline comments instead. |
 | 6 | `scripts/pr_review.py reply <PR> <COMMENT_ID> reply.txt` | Replies in the thread. `--dry-run` posts nothing. |
 | 6 | `scripts/pr_review.py verify <PR> --body-file pr-body.md` | After a body edit: the published body equals the file, no commit hash is in backticks, every commit of the PR appears, the closing issue links, the PR is a draft, the commit links render. Exits 1 on a problem. |
 
-The script selects reviews by reviewer login and commit. Your own thread replies appear in the reviews list as `COMMENTED` entries under your login, so selecting by commit alone finds the wrong review.
+A comment is new when someone other than you posted it after the head commit's committer date. The script skips your login because your own thread replies appear in the reviews list as `COMMENTED` entries.
 
 ## 1. Open the draft PR
 
@@ -44,28 +46,28 @@ gh pr create --draft --base master --head "$(git branch --show-current)" \
   --title "fix(scope): Imperative summary" --body-file pr-body.md
 ```
 
-Return the draft PR URL once created. Continue below only for an explicitly requested automated review routine; first verify that the designated reviewer is available and review has been requested or configured for this PR.
+Return the draft PR URL once created. Continue below only for an explicitly requested automated review routine.
 
-## 2. Wait for the review
+## 2. Wait for the checks
 
-Use the environment's supported asynchronous wait or background execution tools, with short bounded polls when needed. Do not assume a particular `run_in_background` parameter exists. Count all waiting against the routine's remaining time budget.
+Run `scripts/pr_review.py wait <PR>` with the environment's supported asynchronous wait or background execution tools; do not assume a particular `run_in_background` parameter exists. It does not watch a particular reviewer. It reports every new comment and ends when all GitHub Actions jobs and other checks on the head are done, so its exit also gives CI results.
 
-Resolve `REPO`, `PR`, the current `HEAD_SHA`, and `REVIEWER` from the target PR and the designated reviewer. Inspect submitted reviews, not just new inline comments:
+Resolve `REPO`, `PR`, and the current `HEAD_SHA` from the target PR. To inspect submitted reviews by hand:
 
 ```bash
 gh api "repos/$REPO/pulls/$PR/reviews" --paginate \
   --jq '.[] | {id, reviewer: .user.login, commit_id, state, submitted_at}'
 ```
 
-A completed round requires a previously unprocessed, submitted review by `REVIEWER` whose `commit_id` equals the current head SHA and whose state is `COMMENTED`, `APPROVED`, or `CHANGES_REQUESTED`. Zero inline comments can still be a completed review. Record its `REVIEW_ID`, processed review and comment IDs, and suppressed-finding dispositions in the task state.
+A round is complete when `wait` exits 0. The AI review hook posts a review on every head, even one with no findings, so a round with no new review means the hook failed: report it as pending, not clean. Zero inline comments can still be a completed review. Record processed review and comment IDs and suppressed-finding dispositions in the task state.
 
-Re-read the PR head before accepting completion; a review for an older head does not establish coverage of the new one. After a push, verify that a new review is actually scheduled or request one if authorized. If the reviewer is unavailable, no review is scheduled, the API fails persistently, or the time budget expires, report the pending state and end this invocation. Do not treat missing comments or an API error as a clean review, and do not create a monitor unless requested.
+Re-read the PR head before accepting completion; a review for an older head does not establish coverage of the new one. After a push, the hook reviews the new head; run `wait` again. If `wait` reports no new review, exits 3 (60 minutes passed), or the API fails persistently, report the pending state and end this invocation. Do not treat missing comments or an API error as a clean review, and do not create a monitor unless requested.
 
 ## 3. Read the findings
 
-**`gh pr view --json comments` returns `[]` for review comments.** It reads the issue-comment timeline; Copilot's findings are pull-request *review* comments and live on a different endpoint. Looking only there reads as "no feedback" when there are findings waiting.
+**`gh pr view --json comments` returns `[]` for review comments.** It reads the issue-comment timeline; the AI reviewer's findings are pull-request *review* comments and live on a different endpoint. Looking only there reads as "no feedback" when there are findings waiting.
 
-Read both the full body of the completed review and its inline comments:
+Run `scripts/pr_review.py read <PR>`. It prints every new comment in full. By hand, read both the full body of each new review and its inline comments:
 
 ```bash
 # The complete submitted review, including collapsed suppressed comments.
@@ -77,28 +79,22 @@ gh api "repos/$REPO/pulls/$PR/comments" --paginate \
   --jq '.[] | {id, pull_request_review_id, user: .user.login, path, line, in_reply_to_id, body}'
 ```
 
-- Select comments belonging to the completed review via `pull_request_review_id` and the designated reviewer. Root findings have `in_reply_to_id: null`; filter out replies and already handled comment IDs.
+- Group inline comments by `pull_request_review_id`. Root findings have `in_reply_to_id: null`; replies from others can carry new information. Skip already handled comment IDs.
 - **Do not truncate either output or split the review body at `<details>`.** No `| head`, and skip any wrapper that caps stdout: finding bodies get cut mid-sentence and you act on half a finding. Pull one inline body in full with
   `gh api "repos/$REPO/pulls/comments/$ID" --jq '.body'`.
 - Record handled comment IDs alongside processed review IDs in the task state; new comment arrival alone does not establish that a review is complete.
 
-**Include suppressed comments as findings.** Copilot's review body often ends with a collapsed `<details><summary>Suppressed comments (N)</summary>` block. Read every item, including those labelled "Previously missed" or targeting code unchanged since the last review. Validate them in section 4 and fix authorized in-scope defects within the same routine. Suppression and unchanged code are not reasons to skip a finding.
+**Include body-only findings.** Findings the reviewer could not anchor to a diff line appear only in the review body, under **Additional findings**; the body's `Review findings` tally counts them along with the inline ones, so a tally above the number of root inline comments means some are there. This skill calls them suppressed findings (Copilot's name for its equivalent collapsed `Suppressed comments` block). Read every item, including those targeting code unchanged since the last review. Validate them in section 4 and fix authorized in-scope defects within the same routine. Suppression and unchanged code are not reasons to skip a finding.
 
 Suppressed items have no inline comment ID. Track each item's source review ID, file/location, claim, and disposition. Deduplicate the same underlying claim across inline and suppressed findings and across rounds; carry forward the prior disposition only after checking that it still holds on the current head. Count each distinct finding once. The absence of a reply thread affects how you report the outcome, not whether you investigate or fix it.
 
-Also check whether tests actually run on this PR:
-
-```bash
-gh pr view "$PR" --json statusCheckRollup --jq '[.statusCheckRollup[] | {name, conclusion}]'
-```
-
-If no test job appears, say so when you report — a green PR page is not a green suite, and your local run is the only evidence there is.
+Also check whether tests actually run on this PR. `wait` prints every check on the head with its conclusion. If no test job appears, say so when you report — a green PR page is not a green suite, and your local run is the only evidence there is.
 
 ## 4. Validate before fixing
 
 Load `$receiving-code-review` and follow it. The short version: verify each claim against the code before touching anything, and push back with reasoning when it does not hold.
 
-Copilot is right often enough to take seriously and wrong often enough that you must check. From one real run of this loop, three findings:
+The AI reviewer is right often enough to take seriously and wrong often enough that you must check. From one real run of this loop, three findings:
 
 | Finding | Verdict |
 |---|---|
@@ -108,7 +104,7 @@ Copilot is right often enough to take seriously and wrong often enough that you 
 
 Three lessons in that table:
 
-- **Findings can arrive in later rounds.** After pushing a fix, seek review of the new head within the remaining round and waiting budgets.
+- **Findings can arrive in later rounds.** After pushing a fix, wait for the automatic review of the new head while rounds remain.
 - **A wrong reason can still point at a bad line.** When you refute the stated cause, read the line anyway before moving on.
 - **Claims about reachability deserve a probe, not reasoning.** Trace the path and run something.
 
@@ -144,7 +140,7 @@ Then run `scripts/pr_review.py verify`. A new `Fixes #N` shows in `closingIssues
 
 ## 7. Loop
 
-After a fix is pushed, return to section 2 only within the remaining budget and when another review is scheduled or can be requested within authorization.
+After a fix is pushed, return to section 2 while rounds remain.
 
 End cleanly only after reading the full completed review of the current head with no new inline or suppressed findings and no unresolved findings or requested changes from the routine. A review containing only suppressed findings still requires validation and disposition of those findings. Never classify a `CHANGES_REQUESTED` review as clean solely because it has no inline comments. If all findings were refuted with evidence and no code changed, report that disposition and stop without manufacturing a push or another round. If a finding remains unverified or outside the authorized scope, report it as unresolved and do not call the loop clean.
 
