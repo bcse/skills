@@ -47,6 +47,8 @@ Follow the repository's template. Otherwise use this reading order:
 
 Omit sections that add nothing: a small fix may need only Summary and Validation. Keep the core diagram, when the change needs one, and the key results visible. Put long reviewer guides, secondary diagrams, raw measurements, and extended rationale in `<details>` sections or linked references. Use named table headers and short cells. Use prose for reasoning rather than putting paragraphs into table cells.
 
+Name every commit of the PR in the body by its bare hash, which GitHub turns into a link; a hash in backticks stays plain text. For one commit, a sentence such as "All of it is in one commit, 0670c329." is enough. `create-draft-pr`'s `verify` fails a body that leaves a commit out, so write the hashes before the PR is created.
+
 Use a Conventional Commit title: `type(scope): Imperative description`, as in the `conventional-commits` skill. Scope is optional; mark breaking changes with `!`. Match the final scope, keep it near 50 characters, start the description with a capital letter, and omit the final period.
 
 Keep validation claims tied to evidence. Mock tests, live tests, and production observations are distinct. Mark checklist items complete only after the work is complete; omit empty boilerplate.
